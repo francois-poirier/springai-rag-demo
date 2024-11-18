@@ -7,7 +7,6 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
@@ -29,7 +28,7 @@ public class RagService {
 
     private final ChatModel chatModel;;
 
-    public RagService(VectorStore vectorStore, JdbcTemplate jdbcTemplate, OpenAiChatModel chatModel) {
+    public RagService(VectorStore vectorStore, JdbcTemplate jdbcTemplate, ChatModel chatModel) {
         this.vectorStore = vectorStore;
         this.jdbcTemplate = jdbcTemplate;
         this.chatModel = chatModel;

@@ -20,9 +20,9 @@ public class SpringAiRagDemoApplication {
                                         @Value("classpath:pdfs/*") Resource[] pdfs) {
         return args -> {
             ragService.textEmbedding(pdfs);
-            ragService.askLLM("quel EST LE Salaire Minimum Interprofessionnel Garanti ");
+            ragService.askLLM("What are the key new features and improvements introduced in Spring Boot 3, and how do they enhance the development experience for Java applications?");
         };
     }
 
-    
+
 }

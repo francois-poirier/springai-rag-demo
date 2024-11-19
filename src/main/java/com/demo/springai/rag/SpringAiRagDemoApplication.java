@@ -23,4 +23,6 @@ public class SpringAiRagDemoApplication {
             ragService.askLLM("quel EST LE Salaire Minimum Interprofessionnel Garanti ");
         };
     }
+
+    
 }

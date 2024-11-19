@@ -1,75 +1,52 @@
 version: "3.8"
 
 services:
-
-  postgres:
-    image: ankane/pgvector:latest
-    container_name: postgres
-    restart: always
-    environment:
-      - POSTGRES_DB=vectordb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - PGPASSWORD=postgres
-      - POSTGRES_HOST_AUTH_METHOD=trust
-    logging:
-      options:
-        max-size: '10m'
-        max-file: '3'
-    ports:
-      - "5433:5432"
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d vectordb" ]
-      interval: 2s
-      timeout: 20s
-      retries: 10
-
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: pgadmin
-    environment:
-      - 'PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.com}'
-      - 'PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-password}'
-    volumes:
-      - '/servers.json:/pgadmin4/servers.json'
-    ports:
-      - '${PGADMIN_PORT:-5050}:80'
-
   ollama:
     image: ollama/ollama:latest
+    container_name: ollama
     ports:
       - 11434:11434
     volumes:
-      - .:/code
-      - ./ollama/ollama:/root/.ollama
-    container_name: ollama
-    pull_policy: always
-    tty: true
-    restart: always
-    environment:
-      - OLLAMA_KEEP_ALIVE=24h
-      - OLLAMA_HOST=0.0.0.0
-    networks:
-      - ollama-docker
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ollama list || exit 1
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
 
-  sspringai-rag-demo:
-    container_name: springai-rag-demo
-    image: fpo/springai-rag-demo:latest
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
-      - "POSTGRES_HOST=postgres"
-      - "POSTGRES_DB=vectordb"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
-      - "POSTGRES_PORT=5432"
+      - OLLAMA_API_BASE_URL=http://ollama:11434/api
     ports:
-      - "8080:8080"
+      - 80:8080
+    volumes:
+      - open_webui_data:/app/backend/data
+    extra_hosts:
+      - host.docker.internal:host-gateway
+
+  ollama-models-pull:
+    image: curlimages/curl:latest
+    container_name: ollama-models-pull
+    command: >-
+      http://ollama:11434/api/pull -d '{"name": "mistral"}'
     depends_on:
-      - postgres
-      - ollama
+      ollama:
+        condition: service_healthy
 
 
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      VECTOR_STORE_TYPE: pgVector
 
-networks:
-  ollama-docker:
-    external: false
+volumes:
+  ollama_data:
+  open_webui_data:

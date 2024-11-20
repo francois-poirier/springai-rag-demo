@@ -1,34 +1,23 @@
 services:
+
+  openWebUI:
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    restart: always
+    ports:
+      - "3000:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - open-webui-local:/app/backend/data
+
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     ports:
-      - 11434:11434
+      - "11434:11434"
     volumes:
-      - ollama_data:/root/.ollama
-    healthcheck:
-      test: ollama list || exit 1
-      interval: 10s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
-
-  prepare-models:
-    image: ollama/ollama:latest
-    depends_on:
-      - ollama
-    volumes:
-      - ollama_data:/root/.ollama
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-    entrypoint: >      
-      sh -c "
-        echo 'Waiting for Ollama server to start...' &&
-        sleep 10 &&
-        echo 'Pulling mistral...' &&
-        ollama pull mistral &&
-        echo 'Model preparation complete.'"
-
+      - ollama-local:/root/.ollama
 
   postgres:
     image: pgvector/pgvector:pg16
@@ -51,7 +40,8 @@ services:
     ports:
       - '${PGADMIN_PORT:-5050}:80'
 
-
 volumes:
-  ollama_data:
-  open_webui_data:
+  ollama-local:
+    external: false
+  open-webui-local:
+    external: false

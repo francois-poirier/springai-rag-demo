@@ -7,13 +7,12 @@ import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
+import org.springframework.ai.reader.pdf.ParagraphPdfDocumentReader;
+import org.springframework.ai.transformer.splitter.TextSplitter;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,13 +23,10 @@ public class RagService {
 
     private final VectorStore vectorStore;
 
-    private final JdbcTemplate jdbcTemplate;
-
     private final ChatModel chatModel;;
 
-    public RagService(VectorStore vectorStore, JdbcTemplate jdbcTemplate, ChatModel chatModel) {
+    public RagService(VectorStore vectorStore, ChatModel chatModel) {
         this.vectorStore = vectorStore;
-        this.jdbcTemplate = jdbcTemplate;
         this.chatModel = chatModel;
     }
 
@@ -53,17 +49,9 @@ public class RagService {
         return response.getResult().getOutput().getContent();
     }
 
-    public void textEmbedding(Resource[] pdfs) {
-        jdbcTemplate.update("DELETE FROM vector_store");
-        PdfDocumentReaderConfig pdfDocumentReaderConfig = PdfDocumentReaderConfig.defaultConfig();
-        List<Document> documents = List.of();
-        for (Resource pdf : pdfs) {
-            PagePdfDocumentReader pdfDocumentReader =
-                    new PagePdfDocumentReader(pdf, pdfDocumentReaderConfig);
-            documents = pdfDocumentReader.get();
-        }
-        TokenTextSplitter tokenTextSplitter = new TokenTextSplitter();
-        List<Document> chunks = tokenTextSplitter.split(documents);
-        vectorStore.accept(chunks);
+    public void textEmbedding(Resource pdf) {
+        var pdfReader = new ParagraphPdfDocumentReader(pdf);
+        TextSplitter textSplitter = new TokenTextSplitter();
+        vectorStore.accept(textSplitter.apply(pdfReader.get()));
     }
 }

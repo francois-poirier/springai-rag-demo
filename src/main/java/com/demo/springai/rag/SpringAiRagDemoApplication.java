@@ -17,10 +17,10 @@ public class SpringAiRagDemoApplication {
 
     @Bean
     CommandLineRunner commandLineRunner(RagService ragService,
-                                        @Value("classpath:pdfs/*") Resource[] pdfs) {
+                                        @Value("classpath:pdfs/tr_technology_radar_vol_31_en.pdf") Resource pdf) {
         return args -> {
-            ragService.textEmbedding(pdfs);
-            ragService.askLLM("What are the key new features and improvements introduced in Spring Boot 3, and how do they enhance the development experience for Java applications?");
+            ragService.textEmbedding(pdf);
+            ragService.askLLM("What are some of the most prominent technology trends highlighted in the latest Technology Radar?");
         };
     }
 

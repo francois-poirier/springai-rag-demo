@@ -3,6 +3,7 @@ package com.demo.springai.rag.controller;
 import com.demo.springai.rag.service.RagService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -15,7 +16,7 @@ public class RagController {
     }
 
     @GetMapping("/rag")
-    public String rag(String query) {
+    public String rag(@RequestParam(name = "query") String query) {
         return ragService.askLLM(query);
     }
 }

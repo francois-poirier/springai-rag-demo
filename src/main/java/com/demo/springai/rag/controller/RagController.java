@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 public class RagController {
 
@@ -16,7 +18,7 @@ public class RagController {
     }
 
     @GetMapping("/rag")
-    public String rag(@RequestParam(name = "query") String query) {
-        return ragService.askLLM(query);
+    public Map<String,String> chat(@RequestParam(name = "query") String query) {
+        return Map.of("answer", ragService.askLLM(query));
     }
 }

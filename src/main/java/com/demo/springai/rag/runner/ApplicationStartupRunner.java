@@ -25,7 +25,6 @@ public class ApplicationStartupRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         ragService.textEmbedding(pdf);
-        LOGGER.info("demo");
         var response = ragService.askLLM("What are some of the most prominent technology trends highlighted in the latest Technology Radar?");
         LOGGER.info("Output: {}", response);
     }

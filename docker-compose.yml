@@ -1,16 +1,5 @@
 services:
 
-  openWebUI:
-    image: ghcr.io/open-webui/open-webui:latest
-    container_name: open-webui
-    restart: always
-    ports:
-      - "3000:8080"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - open-webui-local:/app/backend/data
-
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
@@ -20,28 +9,37 @@ services:
       - ollama-local:/root/.ollama
 
   postgres:
-    image: pgvector/pgvector:pg16
     container_name: postgres
-    ports:
-      - "5432:5432"
+    image: ankane/pgvector:v0.5.0
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      VECTOR_STORE_TYPE: pgVector
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vector_store
+      - PGPASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: "pg_isready -U postgres -d vector_store"
+      interval: 2s
+      timeout: 20s
+      retries: 10
 
   pgadmin:
-    image: dpage/pgadmin4:latest
     container_name: pgadmin
+    image: dpage/pgadmin4
     environment:
-      - 'PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL:-admin@pgadmin.com}'
-      - 'PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD:-password}'
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-      - '/servers.json:/pgadmin4/servers.json'
+      - ./servers.json:/pgadmin4/servers.json
     ports:
-      - '${PGADMIN_PORT:-5050}:80'
+      - "${PGADMIN_PORT:-5050}:80"
 
 volumes:
   ollama-local:
-    external: false
-  open-webui-local:
     external: false

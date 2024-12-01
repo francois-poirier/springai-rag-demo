@@ -1,57 +1,64 @@
 package com.demo.springai.rag.service;
 
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.UserMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.pdf.ParagraphPdfDocumentReader;
-import org.springframework.ai.transformer.splitter.TextSplitter;
+import org.springframework.ai.reader.ExtractedTextFormatter;
+import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
+import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RagService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RagService.class);
+    private static final String PROMPT_BLUEPRINT = """
+        Answer the query strictly referring the provided context:
+        {context}
+        Query:
+        {query}
+        In case you don't have any answer from the context provided, just say:
+        I'm sorry I don't have the information you are looking for.
+    """;
+    private final ChatModel chatClient;
     private final VectorStore vectorStore;
 
-    private final ChatModel chatModel;;
-
-    public RagService(VectorStore vectorStore, ChatModel chatModel) {
+    public RagService(ChatModel chatClient, VectorStore vectorStore) {
+        this.chatClient = chatClient;
         this.vectorStore = vectorStore;
-        this.chatModel = chatModel;
-    }
-
-    public String askLLM(String query) {
-        SearchRequest searchRequest = SearchRequest.query(query).withTopK(3);
-        List<Document> documentList = vectorStore.similaritySearch(searchRequest);
-
-        String systemMessageTemplate =
-                """
-                Answer the following question based only in the provided CONTEXT
-                If the answer is not found respond : "I don't know".
-                CONTEXT :
-                    {CONTEXT}
-                """;
-        Message systemMessage = new SystemPromptTemplate(systemMessageTemplate)
-                .createMessage(Map.of("CONTEXT", documentList));
-        UserMessage userMessage = new UserMessage(query);
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-        ChatResponse response = chatModel.call(prompt);
-        return response.getResult().getOutput().getContent();
     }
 
     public void textEmbedding(Resource pdf) {
-        var pdfReader = new ParagraphPdfDocumentReader(pdf);
-        TextSplitter textSplitter = new TokenTextSplitter();
-        vectorStore.accept(textSplitter.apply(pdfReader.get()));
+        LOGGER.info("Saving documents.");
+        PagePdfDocumentReader pdfReader = new PagePdfDocumentReader(pdf,
+                PdfDocumentReaderConfig.builder()
+                        .withPageExtractedTextFormatter(ExtractedTextFormatter.builder()
+                                .withNumberOfBottomTextLinesToDelete(3)
+                                .withNumberOfTopPagesToSkipBeforeDelete(1)
+                                .build())
+                        .withPagesPerDocument(1)
+                        .build());
+
+        var tokenTextSplitter = new TokenTextSplitter();
+        this.vectorStore.accept(tokenTextSplitter.apply(pdfReader.get()));
+        LOGGER.info("Documents saved.");
+    }
+
+    public String askLLM(String query) {
+        return chatClient.call(createPrompt(query, vectorStore.similaritySearch(query)));
+    }
+
+    private String createPrompt(String query, List<Document> context) {
+        PromptTemplate promptTemplate = new PromptTemplate(PROMPT_BLUEPRINT);
+        promptTemplate.add("query", query);
+        promptTemplate.add("context", context);
+        return promptTemplate.render();
     }
 }

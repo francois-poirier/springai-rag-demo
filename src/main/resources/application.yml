@@ -5,7 +5,7 @@ spring:
   application:
     name: spring-ai-rag-demo
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/vector_store
     username: postgres
     password: postgres
   ai:
@@ -20,9 +20,9 @@ spring:
         model: mistral
     vectorstore:
       pgvector:
-        index-type: none
+        index-type: hnsw
+        dimensions: 384
         distance-type: cosine_distance
-        dimensions: 4096
         initialize-schema: true
   docker:
     compose:

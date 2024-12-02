@@ -1,13 +1,5 @@
 services:
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama-local:/root/.ollama
-
   postgres:
     container_name: postgres
     image: ankane/pgvector:v0.5.0
@@ -39,6 +31,14 @@ services:
       - ./servers.json:/pgadmin4/servers.json
     ports:
       - "${PGADMIN_PORT:-5050}:80"
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-local:/root/.ollama
 
 volumes:
   ollama-local:

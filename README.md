@@ -28,8 +28,8 @@ docker exec -it ollama ollama run mistral &
 mvn spring-boot:run
 ```
 
-##### Executing curl command
+##### Executing int other terminal
 
-```console
+```bash
 curl --location 'http://localhost:8082/rag?query=%22Please%20name%20the%20most%20important%20tools%20for%20the%20year%3F%22'
 ```

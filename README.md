@@ -31,5 +31,5 @@ mvn spring-boot:run
 ##### Executing int other terminal
 
 ```bash
-curl --location 'http://localhost:8082/rag?query=%22Please%20name%20the%20most%20important%20tools%20for%20the%20year%3F%22'
+curl --location 'http://localhost:8082/rag?query=%22Can%20you%20give%20me%20a%20short%20summary%20of%20the%20thoughtworks%20technology%20radar%3F%22'
 ```

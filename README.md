@@ -1,4 +1,4 @@
-## RAG system demo
+## RAG system demo in progress
 This is a Spring AI-powered Retrieval-Augmented Generation (RAG) application that allows users to upload documents and query information using vector search. It supports PostgreSQL with pgvector for vector storage and can use **Ollama** for embeddings and model queries.
 
 #### Architecture

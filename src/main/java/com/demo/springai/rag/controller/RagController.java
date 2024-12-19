@@ -3,10 +3,10 @@ package com.demo.springai.rag.controller;
 import com.demo.springai.rag.service.RagService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class RagController {
@@ -17,8 +17,15 @@ public class RagController {
         this.ragService = ragService;
     }
 
-    @GetMapping("/rag")
-    public Map<String,String> chat(@RequestParam(name = "query") String query) {
-        return Map.of("answer", ragService.askLLM(query));
+    @PostMapping("/upload")
+    public String uploadDocument(@RequestParam("fileToUpload") MultipartFile document) {
+        ragService.loadDocument(document.getResource());
+
+        return "redirect:/chat";
+    }
+
+    @GetMapping("/chat")
+    public String loadChat() {
+        return "chat";
     }
 }

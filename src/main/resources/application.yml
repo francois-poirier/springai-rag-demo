@@ -5,31 +5,29 @@ spring:
   application:
     name: spring-ai-rag-demo
   datasource:
-    url: jdbc:postgresql://localhost:5432/vector_store
-    username: postgres
-    password: postgres
-  ai:
-    retry:
-      backoff:
-        initial-interval: 2000
-        max-interval: 10000
-        multiplier: 4
-      max-attempts: 20
-    ollama:
-      base-url: http://localhost:11434
-      chat:
-        options:
-          model: mistral
-      embedding:
-        options:
-          model: mistral
-        model: mistral
-    vectorstore:
-      pgvector:
-        index-type: hnsw
-        dimensions: 384
-        distance-type: cosine_distance
-        initialize-schema: true
+    url: jdbc:postgresql://localhost:5432/document
+    username: document_poc
+    password: document_password
+    jpa:
+      hibernate:
+        ddl-auto: update
+    servlet:
+      multipart:
+        max-file-size: 10MB
+    ai:
+      ollama:
+        chat:
+          options:
+            model: mistral
+        embedding:
+          enabled: true
+          options:
+            model: nomic-embed-text
+        vectorstore:
+          pgvector:
+            initialize-schema: true
+            remove-existing-vector-store-table: true
+            table-name: documents
   docker:
     compose:
       file: ./docker-compose.yml

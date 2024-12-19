@@ -1,5 +1,5 @@
 ## RAG system demo
-This is a demo RAG system, which is basically a QA bot which uses solid data to answer questions, rather than relying solely on it's own LLM knowledge.
+This is a Spring AI-powered Retrieval-Augmented Generation (RAG) application that allows users to upload documents and query information using vector search. It supports PostgreSQL with pgvector for vector storage and can use **Ollama** for embeddings and model queries.
 
 #### Architecture
 The System is based on the following components:
@@ -16,10 +16,10 @@ The System is based on the following components:
 - Java 17
 - Spring Boot 3.3.5
 - Spring AI 1.0.0-M3
-- Postgres pgvector 0.7.0-pg16
-- Ollama
+- Postgres pgvector latest
+- Ollama latest
 
-##### Running
+### Start the Application
 simply running spring-boot:run command.
 
 ```bash
@@ -27,9 +27,21 @@ docker compose up -d
 docker exec -it ollama ollama run mistral &
 mvn spring-boot:run
 ```
+##### Verify Service
 
-##### Executing int other terminal
+Ensure the Ollama service is running:
+  ```bash
+  curl http://localhost:11434/models
+  ```
 
-```bash
-curl --location 'http://localhost:8082/rag?query=%22Can%20you%20give%20me%20a%20short%20summary%20of%20the%20thoughtworks%20technology%20radar%3F%22'
-```
+##### Usage
+
+1. **Upload a Document**:
+   Use the `/upload` endpoint to upload a PDF document. This will tokenize the content and store embeddings in the `documents` table.
+
+2. **Query Information**:
+   Use the `/query` endpoint to ask questions based on the uploaded document.
+
+
+
+

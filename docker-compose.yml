@@ -1,25 +1,19 @@
-services:
+version: "3.8"
 
+services:
   postgres:
-    container_name: postgres
-    image: ankane/pgvector:v0.5.0
+    image: ankane/pgvector:latest # Prebuilt PostgreSQL image with pgvector
+    container_name: postgres-pgvector
     restart: always
     environment:
-      - POSTGRES_USER=postgres
+      - POSTGRES_USER=document_poc
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=vector_store
-      - PGPASSWORD=postgres
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
+      - POSTGRES_DB=document_poc
     ports:
-      - '5432:5432'
-    healthcheck:
-      test: "pg_isready -U postgres -d vector_store"
-      interval: 2s
-      timeout: 20s
-      retries: 10
+      - "5432:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
 
   pgadmin:
     container_name: pgadmin
@@ -35,11 +29,14 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+    restart: always
+    volumes:
+      - ollama-data:/root/.ollama
     ports:
       - "11434:11434"
-    volumes:
-      - ollama-local:/root/.ollama
 
 volumes:
-  ollama-local:
-    external: false
+  pgvector-data:
+    driver: local
+  ollama-data:
+    driver: local

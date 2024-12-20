@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSocket
-class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketConfigurer {
 
     @Autowired
     private RagService ragService;

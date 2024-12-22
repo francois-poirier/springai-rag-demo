@@ -27,7 +27,7 @@ const appendParagraph = (paragraph) => {
 
 const loadDataFromLocalstorage = () => {
     const defaultText = `<div class="default-text">
-                            <h1>Poc with Spring AI</h1>
+                            <h1>DocumentGPT with Spring AI</h1>
                             <p>Start a conversation with the uploaded document.<br> Your chat history will be displayed here.</p>
                         </div>`
 

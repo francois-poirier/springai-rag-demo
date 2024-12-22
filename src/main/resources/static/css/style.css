@@ -8,14 +8,14 @@
 }
 
 :root {
-  --text-color: #FFFFFF; 
-  --icon-color: #A8C686; 
-  --icon-hover-bg: #4A6F44; 
-  --placeholder-color: #BFD6B4;
-  --outgoing-chat-bg: #2E5232; 
-  --incoming-chat-bg: #3C7042; 
-  --outgoing-chat-border: #2E5232;
-  --incoming-chat-border: #3C7042; 
+  --text-color: #E0E0E0;
+  --icon-color: #7289DA;
+  --icon-hover-bg: #4B5563;
+  --placeholder-color: #9CA3AF;
+  --outgoing-chat-bg: #1E293B;
+  --incoming-chat-bg: #374151;
+  --outgoing-chat-border: #1E293B;
+  --incoming-chat-border: #374151;
 }
 body {
   background: var(--outgoing-chat-bg);

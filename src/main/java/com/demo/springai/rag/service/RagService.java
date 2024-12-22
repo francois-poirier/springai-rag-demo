@@ -32,22 +32,6 @@ public class RagService {
     }
 
     public void loadDocument(Resource pdf) {
-        /*
-        log.info("Saving documents.");
-
-        PagePdfDocumentReader pdfReader = new PagePdfDocumentReader(pdf,
-                PdfDocumentReaderConfig.builder()
-                        .withPageExtractedTextFormatter(ExtractedTextFormatter.builder()
-                                .withNumberOfBottomTextLinesToDelete(3)
-                                .withNumberOfTopPagesToSkipBeforeDelete(1)
-                                .build())
-                        .withPagesPerDocument(1)
-                        .build());
-
-        var tokenTextSplitter = new TokenTextSplitter();
-        this.vectorStore.accept(tokenTextSplitter.apply(pdfReader.get()));
-        log.info("Documents saved.");
-         */
         // Extract
         PagePdfDocumentReader pdfReader = new PagePdfDocumentReader(pdf,
                 PdfDocumentReaderConfig.builder()
@@ -73,7 +57,7 @@ public class RagService {
         // Load
         this.vectorStore.accept(splitDocuments);
 
-        log.info("Done parsing document, splitting, creating embeddings and storing in vector store");
+        log.info("Done parsing document, splitting, creating embeddings and storing in documents_vector table");
   }
 
     public String askQuestion(String question) {

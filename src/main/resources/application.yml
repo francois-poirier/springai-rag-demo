@@ -10,43 +10,30 @@ spring:
       max-request-size: 20MB
       resolve-lazily: true
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/vector_store}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/documentgpt}
+    username: ${SPRING_DATASOURCE_USERNAME:documentgpt}
+    password: ${SPRING_DATASOURCE_PASSWORD:documentgptpassword}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
   ai:
-    retry:
-      backoff:
-        initial-interval: 2000
-        max-interval: 10000
-        multiplier: 4
-      max-attempts: 20
     ollama:
       embedding:
-        model: ${EMBEDDING_MODEL:mistral}
-        options:
-          top-k: ${OLLAMA_EMBEDDING_TOP-K:10}
-          num-thread: ${EMBEDDINGS_NUM_THREAD:8}
-          num-ctx: 8192
-          num-batch: 768
-          top-p: ${OLLAMA_EMBEDDING_TOP-P:0.5}
         enabled: true
+        options:
+          model: ${EMBEDDING_MODEL:nomic-embed-text}
       base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
       chat:
-        model: ${CHAT_MODEL:mistral}
         options:
-          num-ctx: ${CHAT_MODEL_CONTEXT_LENGTH:32768}
-          num-batch: 768
-          num-thread: ${CHAT_NUM_THREAD:8}
-          top-k: ${CHAT_TOP-K:1}
-          top-p: ${CHAT_TOP-P:0.5}
-          temperature: ${CHAT_TEMPERATURE:0.5}
+          model: ${CHAT_MODEL:mistral}
     vectorstore:
       pgvector:
-        index-type: ${VECTORSTORE_PGVECTOR_INDEX-TYPE:hnsw}
-        dimensions: ${VECTORSTORE_PGVECTOR_DIMENSIONS:768}
-        distance-type: cosine_distance
+        initialize-schema: true
+        remove-existing-vector-store-table: true
+        table-name: documents_vector
 
   docker:
     compose:
       file: ./docker-compose.yml
-      lifecycle-management: start_and_stop
+      lifecycle-management: none

@@ -1,4 +1,4 @@
-## RAG system demo in progress
+## RAG system demo
 This is a Spring AI-powered Retrieval-Augmented Generation (RAG) application that allows users to upload documents and query information using vector search. It supports PostgreSQL with pgvector for vector storage and can use **Ollama** for embeddings and model queries.
 
 #### Architecture
@@ -20,19 +20,21 @@ The System is based on the following components:
 - Ollama latest
 
 ### Start the Application
-simply running spring-boot:run command.
 
+##### start infrastructure
 ```bash
 docker compose up -d
-docker exec -it ollama ollama run mistral &
-mvn spring-boot:run
+docker exec -it ollama ollama pull nomic-embed-text
+docker exec -it ollama ollama pull mistral
 ```
-##### Verify Service
-
-Ensure the Ollama service is running:
-  ```bash
-  curl http://localhost:11434/models
-  ```
+##### Verify the models
+```bash
+docker exec -it ollama ollama list
+```
+##### Start the application with Maven
+```bash
+./mvnw clean spring-boot:run
+```
 
 ##### Usage
 

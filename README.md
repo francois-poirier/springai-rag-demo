@@ -38,11 +38,6 @@ docker exec -it ollama ollama list
 
 ##### Usage
 
-1. **Upload a Document**:
-   Use the `/upload` endpoint to upload a PDF document. This will tokenize the content and store embeddings in the `documents` table.
-
-2. **Query Information**:
-   Use the `/query` endpoint to ask questions based on the uploaded document.
 
 
 

@@ -37,6 +37,15 @@ docker exec -it ollama ollama list
 ```
 
 ##### Usage
+- Open the browser and navigate to `http://localhost:8082/` to access the application.
+- Upload a pdf document.
+- Chat with the system to get answers from the document. Answers are generated using the RAG model.
+
+### Stop the Application and Infrastructure
+```bash
+CTRL+C
+docker compose down -v
+```
 
 
 

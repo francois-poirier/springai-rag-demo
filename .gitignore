@@ -1,7 +1,6 @@
 HELP.md
 target/
 ollama/
-!.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 

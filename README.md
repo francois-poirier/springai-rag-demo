@@ -17,26 +17,54 @@ The System is based on the following components:
 - Docker Compose
 - Maven
 - Java 17
-- Spring Boot 3.3.5
-- Spring AI 1.0.0-M3
+- Spring Boot 3.4.2
+- Spring AI 1.0.0-M5
 - Postgres pgvector latest
 - Ollama latest
+- Deepseek AI
 
-### Start the Application
+### Start the Application in mode dev
 
 ##### start infrastructure
 ```bash
-docker compose up -d
+docker-compose -f compose-ollama.yml up -d
 docker exec -it ollama ollama pull nomic-embed-text
 docker exec -it ollama ollama pull mistral
 ```
+
 ##### Verify the models
 ```bash
 docker exec -it ollama ollama list
 ```
-##### Start the application with Maven
+##### Start the application with profile dev
+Set the following in `application.yml`:
+```yaml
+spring:
+   profiles:
+      active: dev
+```
+Or use an environment variable:
 ```bash
-./mvnw clean spring-boot:run
+SPRING_PROFILES_ACTIVE=dev mvn clean spring-boot:run
+```
+
+### Start the Application in mode prod
+
+##### start infrastructure
+```bash
+docker-compose -f compose.yml up -d
+```
+
+##### Start the application with profile prod
+Set the following in `application.yml`:
+```yaml
+spring:
+   profiles:
+      active: prod
+```
+Or use an environment variable:
+```bash
+SPRING_PROFILES_ACTIVE=prod mvn clean spring-boot:run
 ```
 
 ##### Usage
@@ -44,12 +72,17 @@ docker exec -it ollama ollama list
 - Upload a pdf document.
 - Chat with the system to get answers from the document. Answers are generated using the RAG model.
 
-### Stop the Application and Infrastructure
+### Stop the Application and Infrastructure profile dev
 ```bash
 CTRL+C
-docker compose down -v
+docker compose -f compose-ollama.yml  down -v
 ```
 
+### Stop the Application and Infrastructure profile pro
+```bash
+CTRL+C
+docker compose -f compose.yml  down -v
+```
 
 
 

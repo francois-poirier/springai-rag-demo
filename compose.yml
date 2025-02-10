@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: postgres-pgvector
+    restart: always
+    environment:
+      POSTGRES_USER: documentgpt
+      POSTGRES_PASSWORD: documentgptpassword
+      POSTGRES_DB: documentgpt
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+volumes:
+  pgvector-data:
+    driver: local

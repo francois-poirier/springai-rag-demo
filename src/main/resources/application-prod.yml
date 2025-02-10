@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+  ai:
+    openai:
+      embedding:
+        enabled: true
+      api-key: ${DEEP_SEEK_KEY} # informed by environment variable
+      base-url: ${DEEP_SEEK_BASE_URL:https://api.deepseek.com}
+      chat:
+        options:
+          model: ${CHAT_MODEL:deepseek-chat}
+
+  docker:
+    compose:
+      file: ./compose.yml
+      lifecycle-management: none

@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: spring-ai-rag-demo
+  profiles:
+    active: dev
   servlet:
     multipart:
       max-file-size: 20MB
@@ -18,22 +20,15 @@ spring:
     hibernate:
       ddl-auto: update
   ai:
-    ollama:
-      embedding:
-        enabled: true
-        options:
-          model: ${EMBEDDING_MODEL:nomic-embed-text}
-      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
-      chat:
-        options:
-          model: ${CHAT_MODEL:mistral}
     vectorstore:
       pgvector:
         initialize-schema: true
         remove-existing-vector-store-table: true
         table-name: documents_vector
-
-  docker:
-    compose:
-      file: ./docker-compose.yml
-      lifecycle-management: none
+    openai:
+      api-key: test
+      embedding:
+        enabled: false
+    ollama:
+      embedding:
+        enabled: false

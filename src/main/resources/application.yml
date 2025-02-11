@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: spring-ai-rag-demo
-  profiles:
-    active: dev
   servlet:
     multipart:
       max-file-size: 20MB

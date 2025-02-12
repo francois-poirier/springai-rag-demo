@@ -6,8 +6,8 @@ spring:
     openai:
       embedding:
         enabled: true
-      api-key: ${SPRING_AI_OPENAI_API_KEY} # informed by environment variable
-      base-url: ${DEEP_SEEK_BASE_URL:https://api.openai.com}
+      api-key: ${REMOTE_LLM_KEY} # informed by environment variable
+      base-url: ${REMOTE_LLM_BASE_URL:https://api.openai.com}
       chat:
         options:
           model: ${CHAT_MODEL:gpt-4o-mini}

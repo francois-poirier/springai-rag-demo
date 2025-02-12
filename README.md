@@ -46,7 +46,7 @@ spring:
 Or use an environment variable:
 ```bash
 export SPRING_PROFILES_ACTIVE=dev
-./mvnw clean spring-boot:run
+ ./mvnw clean spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
 ### Start the Application in mode prod
@@ -66,8 +66,8 @@ spring:
 Or use an environment variable:
 ```bash
 export SPRING_PROFILES_ACTIVE=prod
-export DEEP_SEEK_KEY=your_api_key
-./mvnw clean spring-boot:run
+export REMOTE_LLM_KEY=your_api_key
+./mvnw clean spring-boot:run -Dspring-boot.run.profiles=prod
 ```
 
 ##### Usage

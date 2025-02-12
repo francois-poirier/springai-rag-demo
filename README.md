@@ -81,7 +81,7 @@ CTRL+C
 docker compose -f compose-ollama.yml  down -v
 ```
 
-### Stop the Application and Infrastructure profile pro
+### Stop the Application and Infrastructure profile prod
 ```bash
 CTRL+C
 docker compose -f compose.yml  down -v

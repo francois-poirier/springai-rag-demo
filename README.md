@@ -21,7 +21,7 @@ The System is based on the following components:
 - Spring AI 1.0.0-M5
 - Postgres pgvector latest
 - Ollama latest
-- Deepseek AI
+- Deepseek, OpenAI or similar account (if you want to use prod profile)
 
 ### Start the Application in mode dev
 
@@ -66,7 +66,7 @@ spring:
 Or use an environment variable:
 ```bash
 export SPRING_PROFILES_ACTIVE=prod
-export DEEP_SEEK_KEY=your_api_key
+export REMOTE_LLM_KEY=your_api_key
 ./mvnw clean spring-boot:run
 ```
 
